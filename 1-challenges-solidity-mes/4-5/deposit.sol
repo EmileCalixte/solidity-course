@@ -10,7 +10,7 @@ contract Deposit {
     }
 
     function transferBalance(address payable to) public {
-        uint amount = address(this).balance;
+        uint amount = address(this).balance; // We can also use directly the getBalance() global function
         to.transfer(amount);
     }
 }
