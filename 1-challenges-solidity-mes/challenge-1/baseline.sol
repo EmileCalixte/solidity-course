@@ -3,6 +3,6 @@
 pragma solidity >=0.5.0 <0.9.0;
 
 contract CryptosToken {
-    string name = "Cryptos";
+    string public constant name = "Cryptos";
     uint supply;
 }
