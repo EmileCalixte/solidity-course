@@ -8,4 +8,9 @@ contract Deposit {
     function getBalance() public view returns(uint) {
         return address(this).balance;
     }
+
+    function transferBalance(address payable to) public {
+        uint amount = address(this).balance;
+        to.transfer(amount);
+    }
 }
