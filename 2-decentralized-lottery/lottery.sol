@@ -13,6 +13,7 @@ contract Lottery {
 
     receive() external payable {
         require(msg.value == 0.1 ether);
+        require(msg.sender != manager); // The manager cannot participate 
 
         // Convert plain address to payable address
         players.push(payable(msg.sender));
