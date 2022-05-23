@@ -23,4 +23,23 @@ contract Lottery {
 
         return address(this).balance;
     }
+
+    function pickWinner() public {
+        require(msg.sender == manager);
+        require(players.length >= 3); // We dfined in our algorithm that the minimum amount of players is 3 to pick a winner
+
+        uint r = random();
+        uint index = r % players.length;
+        
+        address payable winner = players[index];
+
+        winner.transfer(getBalance());
+
+        // TODO reset
+    }
+
+    // This function generates a pseudorandom integer which is not secure. We shouldn't use it in a real application.
+    function random() internal view returns(uint) {
+        return uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp, players.length)));
+    }
 }
