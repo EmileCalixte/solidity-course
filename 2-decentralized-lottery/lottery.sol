@@ -35,11 +35,15 @@ contract Lottery {
 
         winner.transfer(getBalance());
 
-        // TODO reset
+        reset();
     }
 
     // This function generates a pseudorandom integer which is not secure. We shouldn't use it in a real application.
     function random() internal view returns(uint) {
         return uint(keccak256(abi.encodePacked(block.difficulty, block.timestamp, players.length)));
+    }
+
+    function reset() internal {
+        players = new address payable[](0);
     }
 }
