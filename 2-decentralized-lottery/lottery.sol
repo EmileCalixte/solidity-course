@@ -12,22 +12,22 @@ contract Lottery {
     }
 
     receive() external payable {
-        require(msg.value == 0.1 ether);
-        require(msg.sender != manager); // The manager cannot participate 
+        require(msg.value == 0.1 ether, "You have to send exactly 0.1 ETH to participate");
+        require(msg.sender != manager, "The manager cannot participate");
 
         // Convert plain address to payable address
         players.push(payable(msg.sender));
     }
 
     function getBalance() public view returns(uint) {
-        require(msg.sender == manager);
+        require(msg.sender == manager, "Only the manager can get the lottery balance");
 
         return address(this).balance;
     }
 
     function pickWinner() public {
-        require(msg.sender == manager);
-        require(players.length >= 3); // We dfined in our algorithm that the minimum amount of players is 3 to pick a winner
+        require(msg.sender == manager, "Only the manager can pick a winner");
+        require(players.length >= 3, "At least 3 players are required to pick a winner");
 
         uint r = random();
         uint index = r % players.length;
