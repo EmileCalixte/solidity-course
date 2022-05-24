@@ -34,4 +34,9 @@ contract Auction {
         ipfsHash = "";
         bidIncrement = 100 wei;
     }
+
+    function changeOwner(address payable _owner) public {
+        require(owner == msg.sender);
+        owner = _owner;
+    }
 }
