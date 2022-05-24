@@ -34,6 +34,10 @@ contract Crowdfunding {
         admin = msg.sender;
     }
 
+    event Contribute(address _sender, uint _value);
+    event CreateRequest(string _description, address _recipient, uint _amount);
+    event MakePayment(address _recipient, uint _value);
+
     receive() payable external {
         contribute();
     }
@@ -53,6 +57,8 @@ contract Crowdfunding {
 
         contributors[msg.sender] += msg.value;
         raisedAmount += msg.value;
+
+        emit Contribute(msg.sender, msg.value);
     }
 
     function getBalance() public view returns(uint) {
@@ -81,6 +87,8 @@ contract Crowdfunding {
         newRequest.amount = _amount;
         newRequest.votersCount = 0;
         newRequest.completed = false;
+
+        emit CreateRequest(_description, _recipient, _amount);
     }
 
     function voteForRequest(uint _requestNumber) public {
@@ -104,5 +112,7 @@ contract Crowdfunding {
 
         request.completed = true;
         request.recipient.transfer(request.amount);
+
+        emit MakePayment(request.recipient, request.amount);
     }
 }
