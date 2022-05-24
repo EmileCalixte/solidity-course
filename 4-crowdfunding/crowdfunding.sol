@@ -93,4 +93,16 @@ contract Crowdfunding {
         request.voters[msg.sender] = true;
         ++request.votersCount;
     }
+
+    function makePayment(uint _requestNumber) public onlyAdmin {
+        require(raisedAmount >= contributionGoal, "The goal was not reached");
+
+        Request storage request = requests[_requestNumber];
+
+        require(request.completed == false, "The request is already completed");
+        require(request.votersCount > contributorsCount / 2); // 50%
+
+        request.completed = true;
+        request.recipient.transfer(request.amount);
+    }
 }
