@@ -3,6 +3,15 @@
 pragma solidity >=0.6.0 <0.9.0;
 
 contract Crowdfunding {
+    struct Request {
+        string description;
+        address payable recipient;
+        uint amount;
+        bool completed;
+        uint votersCount;
+        mapping(address => bool) voters;
+    }
+
     address public admin;
 
     mapping(address => uint) public contributors;
@@ -15,6 +24,9 @@ contract Crowdfunding {
 
     uint public raisedAmount;
 
+    mapping(uint => Request) public requests;
+    uint public numRequests;
+
     constructor(uint _contributionGoal, uint campaignDuration) { // campaignDuration in seconds
         contributionGoal = _contributionGoal;
         deadline = block.timestamp + campaignDuration;
@@ -24,6 +36,11 @@ contract Crowdfunding {
 
     receive() payable external {
         contribute();
+    }
+
+    modifier onlyAdmin() {
+        require(msg.sender == admin);
+        _;
     }
 
     function contribute() public payable {
@@ -53,5 +70,16 @@ contract Crowdfunding {
 
         contributors[msg.sender] = 0;
         recipient.transfer(value);
+    }
+
+    function createRequest(string memory _description, address payable _recipient, uint _amount) public onlyAdmin {
+        Request storage newRequest = requests[numRequests];
+        ++numRequests;
+
+        newRequest.description = _description;
+        newRequest.recipient = _recipient;
+        newRequest.amount = _amount;
+        newRequest.votersCount = 0;
+        newRequest.completed = false;
     }
 }
