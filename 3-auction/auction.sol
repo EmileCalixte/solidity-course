@@ -2,6 +2,15 @@
  
 pragma solidity >=0.6.0 <0.9.0;
 
+contract AuctionCreator {
+    Auction[] public auctions;
+
+    function createAuction() public {
+        Auction newAuction = new Auction(msg.sender);
+        auctions.push(newAuction);
+    }
+}
+
 contract Auction {
     enum AuctionState {Started, Running, Ended, Cancelled}
 
@@ -24,8 +33,8 @@ contract Auction {
 
     uint bidIncrement;
 
-    constructor() {
-        owner = payable(msg.sender);
+    constructor(address _owner) {
+        owner = payable(_owner);
         state = AuctionState.Running;
         
         startBlockNumber = block.number;
