@@ -82,4 +82,15 @@ contract Crowdfunding {
         newRequest.votersCount = 0;
         newRequest.completed = false;
     }
+
+    function voteForRequest(uint _requestNumber) public {
+        require(contributors[msg.sender] > 0, "Only contributors can vote for a request");
+
+        Request storage request = requests[_requestNumber];
+
+        require(request.voters[msg.sender] == false, "You have already voted");
+        
+        request.voters[msg.sender] = true;
+        ++request.votersCount;
+    }
 }
