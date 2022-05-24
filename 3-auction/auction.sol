@@ -35,8 +35,12 @@ contract Auction {
         bidIncrement = 100 wei;
     }
 
-    function changeOwner(address payable _owner) public {
+    modifier onlyOwner() {
         require(owner == msg.sender);
+        _; // <- Here comes the original function code
+    }
+
+    function changeOwner(address payable _owner) public onlyOwner {
         owner = _owner;
     }
 }
