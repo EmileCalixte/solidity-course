@@ -106,6 +106,7 @@ contract Auction {
             }
         }
 
+        bids[recipient] = 0; // Prevents multiple withdrawals from the same bidder
         recipient.transfer(value);
     }
 
