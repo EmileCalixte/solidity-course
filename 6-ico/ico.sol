@@ -69,7 +69,7 @@ contract Cryptos is ERC20Token {
         return balances[_owner];
     }
 
-    function transfer(address _to, uint256 _value) public override returns (bool success) {
+    function transfer(address _to, uint256 _value) public virtual override returns (bool success) {
         require(balances[msg.sender] >= _value);
 
         balances[_to] += _value;
@@ -97,7 +97,7 @@ contract Cryptos is ERC20Token {
         return true;
     }
 
-    function transferFrom(address _from, address _to, uint256 _value) public override returns (bool success) {
+    function transferFrom(address _from, address _to, uint256 _value) public virtual override returns (bool success) {
         require(allowed[_from][msg.sender] >= _value);
         require(balances[_from] >= _value);
         
@@ -186,6 +186,25 @@ contract CryptosICO is Cryptos {
         deposit.transfer(msg.value);
 
         emit Invest(msg.sender, msg.value, tokens);
+
+        return true;
+    }
+
+    function transfer(address _to, uint256 _value) public override returns (bool success) {
+        require(block.timestamp > tokenTradeStart);
+        return super.transfer(_to, _value);
+    }
+
+    function transferFrom(address _from, address _to, uint256 _value) public override returns (bool success) {
+        require(block.timestamp > tokenTradeStart);
+        return super.transferFrom(_from, _to, _value);
+    }
+
+    // The function can be called by anyone, so that the admin cannot change his mind. Anyone can trigger the tokens burn
+    function burn() public returns(bool) {
+        require(getCurrentState() == ICOState.afterEnd);
+
+        balances[founder] = 0; // We could also transfer tokens to an address for which we don't have the private key
 
         return true;
     }
